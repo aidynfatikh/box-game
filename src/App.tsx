@@ -69,23 +69,96 @@ function App() {
     };
   }, [players]);
 
+  // Inline styles for simplicity
+  const containerStyle: React.CSSProperties = {
+    display: "flex",
+    height: "100vh",
+    margin: 0,
+    padding: 0,
+    boxSizing: "border-box",
+    fontFamily: "Arial, sans-serif",
+  };
+
+  const sidebarStyle: React.CSSProperties = {
+    width: "200px",
+    backgroundColor: "#f5f5f5",
+    borderRight: "1px solid #ddd",
+    padding: "10px",
+    overflowY: "auto",
+  };
+
+  const sidebarHeaderStyle: React.CSSProperties = {
+    marginBottom: "10px",
+    fontWeight: "bold",
+    fontSize: "16px",
+    textAlign: "center",
+  };
+
+  const playerItemStyle: (isSelf: boolean) => React.CSSProperties = (isSelf) => ({
+    display: "flex",
+    alignItems: "center",
+    padding: "5px",
+    marginBottom: "5px",
+    backgroundColor: isSelf ? "#e0ffe0" : "#fff",
+    borderRadius: "4px",
+    border: isSelf ? "1px solid #4caf50" : "1px solid #ccc",
+  });
+
+  const colorBoxStyle: (color: string) => React.CSSProperties = (color) => ({
+    width: "16px",
+    height: "16px",
+    backgroundColor: color,
+    borderRadius: "3px",
+    marginRight: "8px",
+    border: "1px solid #999",
+  });
+
+  const gameAreaStyle: React.CSSProperties = {
+    flex: 1,
+    position: "relative",
+    backgroundColor: "#fafafa",
+  };
+
   return (
-    <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
-      {Object.entries(players).map(([pid, player]) => (
-        <div
-          key={pid}
-          style={{
-            position: "absolute",
-            left: player.x,
-            top: player.y,
-            width: 30,
-            height: 30,
-            backgroundColor: player.color,
-            borderRadius: 4,
-            border: pid === id ? "2px solid black" : "none",
-          }}
-        />
-      ))}
+    <div style={containerStyle}>
+      {/* Sidebar with player list */}
+      <div style={sidebarStyle}>
+        <div style={sidebarHeaderStyle}>Players</div>
+        {Object.entries(players).map(([pid, player]) => {
+          const isSelf = pid === id;
+          return (
+            <div key={pid} style={playerItemStyle(isSelf)}>
+              <div style={colorBoxStyle(player.color)} />
+              <div>
+                <div style={{ fontSize: "14px" }}>{isSelf ? "You" : pid.slice(0, 6)}</div>
+                <div style={{ fontSize: "12px", color: "#555" }}>
+                  ({player.x}, {player.y})
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Game area */}
+      <div style={gameAreaStyle}>
+        {Object.entries(players).map(([pid, player]) => (
+          <div
+            key={pid}
+            style={{
+              position: "absolute",
+              left: player.x,
+              top: player.y,
+              width: 30,
+              height: 30,
+              backgroundColor: player.color,
+              borderRadius: 4,
+              border: pid === id ? "2px solid black" : "none",
+              transition: "left 0.1s, top 0.1s",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }
